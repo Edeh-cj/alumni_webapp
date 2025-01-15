@@ -1,8 +1,12 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:alumni_webapp/controllers/_.dart';
 import 'package:alumni_webapp/controllers/alumni_controller.dart';
 import 'package:alumni_webapp/models/alumni.dart';
 import 'package:alumni_webapp/screens/app_loading_overlay.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import 'button.dart';
@@ -20,7 +24,7 @@ class _SendInviteCardState extends State<SendInviteCard> {
   final _formKey = GlobalKey<FormState>();
   final titleCtrl = TextEditingController();
   final messageCtrl = TextEditingController();
-  var attachmentFile;
+  Uint8List? attachmentFile;
   Alumni? memberValue;
   bool isSendToAll = false;
 
@@ -42,24 +46,26 @@ class _SendInviteCardState extends State<SendInviteCard> {
           children: [
             SizedBox(
               width: 181/r,
-              child: Text.rich(
-                TextSpan(
-                  text: 'Create/Send ',
-                  style: TextStyle(
-                    fontSize: 16/r,
-                    color: AppColors.mainGreen,
-                    height: 1.2,
-                    fontFamily: "Roboto"
-                  ),
-                  children: const [
-                    TextSpan(
-                      text: 'Invitations To Alumni',
-                      style: TextStyle(
-                        color: Colors.black
+              child: Material(
+                child: Text.rich(
+                  TextSpan(
+                    text: 'Create/Send ',
+                    style: TextStyle(
+                      fontSize: 16/r,
+                      color: AppColors.mainGreen,
+                      height: 1.2,
+                      fontFamily: "Roboto"
+                    ),
+                    children: const [
+                      TextSpan(
+                        text: 'Invitations To Alumni',
+                        style: TextStyle(
+                          color: Colors.black
+                        )
                       )
-                    )
-                  ]
-                )
+                    ]
+                  )
+                ),
               ),
             ),
             spacing(10/r),
@@ -116,6 +122,12 @@ class _SendInviteCardState extends State<SendInviteCard> {
           SizedBox(height: 12/r,),
           TextFormField(
             controller: titleCtrl,
+            style: TextStyle(
+              height: 1.4,
+              fontFamily: 'Roboto',
+              color: Colors.black.withOpacity(0.7),
+              fontSize: 16/r
+            ),
             decoration: InputDecoration(
               constraints: BoxConstraints.tight(Size(double.maxFinite, 54/r)),
               border: InputBorder.none,
@@ -154,11 +166,16 @@ class _SendInviteCardState extends State<SendInviteCard> {
           ),
           SizedBox(height: 12/r,),
           TextFormField(
-            minLines: 3,
-            maxLines: 3,
+            minLines: 4,
+            maxLines: 4,
             controller: messageCtrl,
+            style: TextStyle(
+              height: 1.4,
+              fontFamily: 'Roboto',
+              color: Colors.black.withOpacity(0.7),
+              fontSize: 16/r
+            ),
             decoration: InputDecoration(
-              // constraints: BoxConstraints.tight(Size(double.maxFinite, 54/r)),
               border: InputBorder.none,
               errorBorder: InputBorder.none,
               filled: true,
@@ -200,12 +217,28 @@ class _SendInviteCardState extends State<SendInviteCard> {
             width: double.maxFinite,
             decoration: BoxDecoration(
               color: AppColors.textfieldGray,
+              image: attachmentFile == null ? null : DecorationImage(
+                fit: BoxFit.cover,
+                opacity: 0.8,
+                image: MemoryImage(attachmentFile!)
+              )
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 IconButton(
-                  onPressed: (){}, 
+                  onPressed: () async{
+                    final imagePicker = ImagePicker();
+                    final xfile = await imagePicker.pickImage(source: ImageSource.gallery);
+
+                    if (xfile != null) {
+                      Uint8List imageBytes = await xfile.readAsBytes(); 
+                      setState(() {
+                        attachmentFile = imageBytes;
+                      });
+                    }
+
+                  }, 
                   icon: Icon(
                     Icons.attach_file_outlined,
                     color: Colors.grey.shade800,
@@ -268,7 +301,13 @@ class _SendInviteCardState extends State<SendInviteCard> {
             ],
           ),
           SizedBox(height: 4/r,),
-          DropdownButtonFormField<Alumni>(
+          DropdownButtonFormField<Alumni?>(
+            style: TextStyle(
+              height: 1.4,
+              fontFamily: 'Roboto',
+              color: Colors.black.withOpacity(0.7),
+              fontSize: 16/r
+            ),
             decoration: InputDecoration(
               constraints: BoxConstraints.tight(Size(double.maxFinite, 54/r)),
               border: InputBorder.none,
@@ -279,7 +318,9 @@ class _SendInviteCardState extends State<SendInviteCard> {
             value: memberValue,
             items: List.generate(
               options.length, 
-              (index) => DropdownMenuItem(child: Text(
+              (index) => DropdownMenuItem(
+                value: options[index],
+                child: Text(
                   options[index].name, 
                   style: TextStyle(
                     fontSize: 16/r,

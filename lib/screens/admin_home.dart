@@ -21,6 +21,7 @@ class _AdminHomeState extends State<AdminHome> {
   @override
   Widget build(BuildContext context) {
     double r = MediaQuery.of(context).devicePixelRatio;
+    List<Alumni> members = context.watch<Controller>().members;
     return appLoadingOverlay(
       child: Scaffold(
         appBar: AppBar(
@@ -31,11 +32,22 @@ class _AdminHomeState extends State<AdminHome> {
             Expanded(
               flex: 3,
               child: Padding(
-                padding: const EdgeInsets.only(left: 16.0),
+                padding: EdgeInsets.only(left: 48.0/r),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    //create searchBar
+                    searchBar,
+                    spacing(32/r),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: List.generate(
+                            members.length, 
+                            (index) => alumniListCard(members[index])
+                          ),
+                        ),
+                      ),
+                    )
 
                   ],
                 ),
@@ -95,6 +107,8 @@ class _AdminHomeState extends State<AdminHome> {
     
   }
 
+  spacing(double height)=> SizedBox(height: height,);
+
   Widget textButton( String title ,Function() onTap) {
     return Builder(
       builder: (context) {
@@ -130,6 +144,27 @@ class _AdminHomeState extends State<AdminHome> {
     );
   }
 
+  Widget get searchBar {
+    double r = MediaQuery.of(context).devicePixelRatio;
+    return TextField(
+      decoration: InputDecoration(
+        fillColor:const Color.fromRGBO(221, 221, 221, 0.2),
+        filled: true,
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30),
+          borderSide: BorderSide.none
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30),
+          borderSide: BorderSide.none
+        ), 
+        hintText: 'Search',
+        prefixIcon: const Icon(Icons.search),     
+        constraints: BoxConstraints.tight(Size(double.maxFinite, 50/r))
+      ),
+    );
+  }
+  
   Widget alumniListCard(Alumni alumni){
     double r = MediaQuery.of(context).devicePixelRatio;
     return Container(
@@ -161,7 +196,31 @@ class _AdminHomeState extends State<AdminHome> {
                   style: TextStyle(
                     fontSize: 16/r,
                     color: Colors.black,
-                    height: 0.9
+                    height: 1.3
+                  ),
+                ),
+                Text(
+                  alumni.occupation,
+                  style: TextStyle(
+                    fontSize: 16/r,
+                    color: Colors.black,
+                    height: 1.3
+                  ),
+                ),
+                Text(
+                  '${alumni.department} - ${alumni.yearOfGraduation}',
+                  style: TextStyle(
+                    fontSize: 16/r,
+                    color: Colors.black,
+                    height: 1.3
+                  ),
+                ),
+                Text(
+                  alumni.email,
+                  style: TextStyle(
+                    fontSize: 16/r,
+                    color: Colors.black,
+                    height: 1.3
                   ),
                 ),
                 
@@ -173,9 +232,12 @@ class _AdminHomeState extends State<AdminHome> {
           ElevatedButton(
             style: ButtonStyle(
               padding: MaterialStatePropertyAll<EdgeInsets>(EdgeInsets.symmetric(vertical: 16/r, horizontal: 24/r)),
-              side: MaterialStatePropertyAll<BorderSide>(BorderSide(color: AppColors.mainGreen))
+              side: MaterialStatePropertyAll<BorderSide>(BorderSide(color: AppColors.mainGreen)),
+              shape: const MaterialStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(borderRadius: BorderRadius.zero)),
+              elevation: const MaterialStatePropertyAll<double>(0),
+              backgroundColor: const MaterialStatePropertyAll<Color>(Colors.transparent)
             ),
-            onPressed: (){}, 
+            onPressed: (){},
             child: Text(
               'Send Mail',
               style: TextStyle(
@@ -190,6 +252,7 @@ class _AdminHomeState extends State<AdminHome> {
 
     );
   }
+
   Widget  get donationBox {
     double r = MediaQuery.of(context).devicePixelRatio;
     formatIntWithCommas(int b){
