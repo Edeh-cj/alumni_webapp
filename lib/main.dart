@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: const AdminHome(),
+      home: context.watch<Controller>().adminUser == null?  const LandingPage() : const AdminHome(),
     );
   }
 }

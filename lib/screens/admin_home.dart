@@ -2,7 +2,6 @@ import 'package:alumni_webapp/controllers/_.dart';
 import 'package:alumni_webapp/screens/app_loading_overlay.dart';
 import 'package:alumni_webapp/screens/colors.dart';
 import 'package:alumni_webapp/screens/custom_app_bar.dart';
-import 'package:alumni_webapp/screens/join_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';

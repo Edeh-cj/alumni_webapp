@@ -1,5 +1,6 @@
 import 'package:alumni_webapp/screens/app_loading_overlay.dart';
 import 'package:alumni_webapp/screens/colors.dart';
+import 'package:alumni_webapp/screens/donation_cards.dart';
 import 'package:alumni_webapp/screens/join_card.dart';
 import 'package:alumni_webapp/screens/login_card.dart';
 import 'package:flutter/material.dart';
@@ -125,7 +126,12 @@ class _LandingPageState extends State<LandingPage> {
                             shape: const BeveledRectangleBorder(side: BorderSide(width: 0.5)),
                           ),
                           onPressed: (){
-                        
+                            showDialog(
+                              context: context, 
+                              builder: (context){
+                                return const Center(child: PaymentDetailsForm());
+                              }
+                            );
                         
                           }, 
                           child: Row(
