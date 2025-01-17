@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:alumni_webapp/controllers/_.dart';
 import 'package:alumni_webapp/controllers/alumni_controller.dart';
 import 'package:alumni_webapp/models/alumni.dart';
-import 'package:alumni_webapp/screens/app_loading_overlay.dart';
+import 'package:alumni_webapp/ui/app_loading_overlay.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';

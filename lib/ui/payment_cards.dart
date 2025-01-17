@@ -1,7 +1,7 @@
 import 'package:alumni_webapp/controllers/_.dart';
 import 'package:alumni_webapp/controllers/donations_controller.dart';
-import 'package:alumni_webapp/screens/display_failure.dart';
-import 'package:alumni_webapp/screens/display_success.dart';
+import 'package:alumni_webapp/ui/display_failure.dart';
+import 'package:alumni_webapp/ui/display_success.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:provider/provider.dart';

@@ -1,8 +1,8 @@
-import 'package:alumni_webapp/screens/app_loading_overlay.dart';
-import 'package:alumni_webapp/screens/colors.dart';
-import 'package:alumni_webapp/screens/donation_cards.dart';
-import 'package:alumni_webapp/screens/join_card.dart';
-import 'package:alumni_webapp/screens/login_card.dart';
+import 'package:alumni_webapp/ui/app_loading_overlay.dart';
+import 'package:alumni_webapp/ui/colors.dart';
+import 'package:alumni_webapp/ui/payment_cards.dart';
+import 'package:alumni_webapp/ui/join_card.dart';
+import 'package:alumni_webapp/ui/login_card.dart';
 import 'package:flutter/material.dart';
 
 class LandingPage extends StatefulWidget {

@@ -1,5 +1,5 @@
 import 'package:alumni_webapp/controllers/auth_controller.dart';
-import 'package:alumni_webapp/screens/colors.dart';
+import 'package:alumni_webapp/ui/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

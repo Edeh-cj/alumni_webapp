@@ -1,7 +1,8 @@
 import 'package:alumni_webapp/controllers/_.dart';
-import 'package:alumni_webapp/screens/app_loading_overlay.dart';
-import 'package:alumni_webapp/screens/colors.dart';
-import 'package:alumni_webapp/screens/custom_app_bar.dart';
+import 'package:alumni_webapp/ui/app_loading_overlay.dart';
+import 'package:alumni_webapp/ui/colors.dart';
+import 'package:alumni_webapp/ui/custom_app_bar.dart';
+import 'package:alumni_webapp/ui/donation_history_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -93,7 +94,14 @@ class _AdminHomeState extends State<AdminHome> {
 
                     SizedBox(height: 24/r,),
                     
-                    donationBox
+                    InkWell(
+                      onTap: (){
+                        Navigator.push(
+                          context, 
+                          MaterialPageRoute(builder: (context)=> const DonationHistoryPage())
+                        );
+                      },
+                      child: donationBox)
                   ],
                 ),
               )

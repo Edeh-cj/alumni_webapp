@@ -1,8 +1,8 @@
 import 'package:alumni_webapp/constants.dart';
 import 'package:alumni_webapp/controllers/alumni_controller.dart';
 import 'package:alumni_webapp/models/alumni.dart';
-import 'package:alumni_webapp/screens/button.dart';
-import 'package:alumni_webapp/screens/colors.dart';
+import 'package:alumni_webapp/ui/button.dart';
+import 'package:alumni_webapp/ui/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

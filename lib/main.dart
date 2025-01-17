@@ -1,7 +1,7 @@
 import 'package:alumni_webapp/controllers/_.dart';
-import 'package:alumni_webapp/screens/admin_home.dart';
-import 'package:alumni_webapp/screens/colors.dart';
-import 'package:alumni_webapp/screens/landing_page.dart';
+import 'package:alumni_webapp/ui/admin_home.dart';
+import 'package:alumni_webapp/ui/colors.dart';
+import 'package:alumni_webapp/ui/landing_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

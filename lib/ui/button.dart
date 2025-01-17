@@ -1,4 +1,4 @@
-import 'package:alumni_webapp/screens/colors.dart';
+import 'package:alumni_webapp/ui/colors.dart';
 import 'package:flutter/material.dart';
 
 class AppButton extends StatelessWidget {
