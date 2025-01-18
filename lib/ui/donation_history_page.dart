@@ -1,3 +1,4 @@
+import 'package:alumni_webapp/controllers/donations_controller.dart';
 import 'package:alumni_webapp/models/donation_record.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -294,13 +295,40 @@ class _DonationHistoryPageState extends State<DonationHistoryPage> {
           ),
           Padding(
             padding: EdgeInsets.all(16.0/r),
-            child: Text(
-              'N${formatIntWithCommas(context.watch<Controller>().totalDonations)}',
-              style: TextStyle(
-                fontSize: 48/r,
-                color: AppColors.mainGreen,
-                height: 1.2
-              ),
+            child: FutureBuilder<int>(
+              future: context.read<Controller>().getTotalDonations(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting ) {
+                  return SizedBox(
+                    height: 80/r,
+                    width: 200/r,
+                    child: const Center(
+                      child: SizedBox.square(
+                        dimension: 30,
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
+                  );
+                  
+                } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
+                  return Text(
+                    'N${formatIntWithCommas(context.watch<Controller>().totalDonations)}',
+                    style: TextStyle(
+                      fontSize: 48/r,
+                      color: AppColors.mainGreen,
+                      height: 1.2
+                    ),
+                  );
+                } else {
+                  return Text(
+                    'error',
+                    style: TextStyle(
+                      fontSize: 16/r,
+                      color: Colors.red
+                    ),
+                  );
+                }
+              }
             ),
           )
         ],

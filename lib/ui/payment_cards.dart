@@ -24,6 +24,7 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
   final expiryCtrl = TextEditingController();
   final amountCtrl = TextEditingController();
   final passwordCtrl = TextEditingController();
+  final tokenCtrl = TextEditingController();
 
   late Widget display = detailForm;
 
@@ -90,7 +91,13 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
                   if (!_detailFormKey.currentState!.validate()) {
                     await context
                         .read<Controller>()
-                        .makeDonations()
+                        .makeDonations(
+                          cardNumber: int.parse(cardNumberCtrl.text), 
+                          cvv: int.parse(cardNumberCtrl.text), 
+                          expiryDate: int.parse(expiryCtrl.text), 
+                          amount: int.parse(amountCtrl.text), 
+                          cardPin: int.parse(passwordCtrl.text)
+                          )
                         .then((value) {
                       setState(() {
                         display = tokenForm;
@@ -104,7 +111,6 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
     );
   }
 
-  
   Widget get tokenForm {
     double r = MediaQuery.of(context).devicePixelRatio;
     return Container(
@@ -128,7 +134,9 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
                 if (!_tokenFormKey.currentState!.validate()) {
                   await context
                       .read<Controller>()
-                      .sendPaymentToken()
+                      .sendPaymentToken(
+                        int.parse(tokenCtrl.text)
+                      )
                       .then((value) {
                         displaySuccess(context);
                   }).onError((error, stackTrace) => displayFailure(context));

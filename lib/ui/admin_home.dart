@@ -1,4 +1,5 @@
 import 'package:alumni_webapp/controllers/_.dart';
+import 'package:alumni_webapp/controllers/donations_controller.dart';
 import 'package:alumni_webapp/ui/app_loading_overlay.dart';
 import 'package:alumni_webapp/ui/colors.dart';
 import 'package:alumni_webapp/ui/custom_app_bar.dart';
@@ -260,7 +261,7 @@ class _AdminHomeState extends State<AdminHome> {
     );
   }
 
-  Widget  get donationBox {
+  Widget get donationBox {
     double r = MediaQuery.of(context).devicePixelRatio;
     formatIntWithCommas(int b){
       final formatter = NumberFormat("#,###");
@@ -283,13 +284,40 @@ class _AdminHomeState extends State<AdminHome> {
           ),
           Padding(
             padding: EdgeInsets.all(16.0/r),
-            child: Text(
-              'N${formatIntWithCommas(context.watch<Controller>().totalDonations)}',
-              style: TextStyle(
-                fontSize: 48/r,
-                color: AppColors.mainGreen,
-                height: 1.2
-              ),
+            child: FutureBuilder<int>(
+              future: context.read<Controller>().getTotalDonations(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting ) {
+                  return SizedBox(
+                    height: 80/r,
+                    width: 200,
+                    child: const Center(
+                      child: SizedBox.square(
+                        dimension: 30,
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
+                  );
+                  
+                } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
+                  return Text(
+                    'N${formatIntWithCommas(context.watch<Controller>().totalDonations)}',
+                    style: TextStyle(
+                      fontSize: 48/r,
+                      color: AppColors.mainGreen,
+                      height: 1.2
+                    ),
+                  );
+                } else {
+                  return Text(
+                    'error',
+                    style: TextStyle(
+                      fontSize: 16/r,
+                      color: Colors.red
+                    ),
+                  );
+                }
+              }
             ),
           )
         ],

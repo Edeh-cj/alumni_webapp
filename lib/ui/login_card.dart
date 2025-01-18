@@ -1,5 +1,7 @@
 import 'package:alumni_webapp/controllers/auth_controller.dart';
 import 'package:alumni_webapp/ui/colors.dart';
+import 'package:alumni_webapp/ui/display_failure.dart';
+import 'package:alumni_webapp/ui/display_success.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,6 +21,8 @@ class _LoginCardState extends State<LoginCard> {
 
   final passKeyCtrl = TextEditingController();
 
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
 
@@ -27,8 +31,6 @@ class _LoginCardState extends State<LoginCard> {
     final modelRead = context.read<Controller>();
 
     final spacing = SizedBox(height: 10/r,);
-
-    final formKey = GlobalKey<FormState>();
 
     textfield(String label, TextEditingController controller) => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,7 +55,7 @@ class _LoginCardState extends State<LoginCard> {
             fillColor: AppColors.textfieldGray,
           ),
           validator: (value) {
-            if (value!=null) {
+            if (value!=null && value.isNotEmpty) {
               return null;
             } else {
               return 'This Field must not be null';
@@ -72,7 +74,7 @@ class _LoginCardState extends State<LoginCard> {
         border: Border.all(color: Colors.black.withOpacity(0.15))
       ),
       child: Form(
-        key: formKey,
+        key: _formKey,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -106,12 +108,12 @@ class _LoginCardState extends State<LoginCard> {
             spacing,
             AppButton(
               label: 'Continue', 
-              onPressed: (){
-                if (formKey.currentState!.validate()) {
-                  modelRead.loginAdmin(
+              onPressed: () async{
+                if (_formKey.currentState!.validate()) {
+                  await modelRead.loginAdmin(
                     emailCtrl.text,
                     passKeyCtrl.text
-                  );
+                  ).catchError((error)=> displayFailure(context));
                 }
               }
             )

@@ -1,5 +1,5 @@
-const List<String> departments = [];
+const List<String> departments = ['English', 'History', 'Philosophy', 'Linguistics', 'Religious Studies', 'Theatre Arts', 'Music', 'Fine Arts', 'Physics', 'Chemistry', 'Biology', 'Mathematics', 'Computer Science', 'Geology', 'Microbiology', 'BioChemistry', 'Psychology', 'Sociology', 'Political Science', 'Social Works', 'Law', 'Civil Engineering', 'Electrical Engineering', 'Electronics Engineering', 'Management', 'Marketing', 'Finance', 'Accounting', 'Economics', 'Human Resources'];
 
-const List<String> degrees = [];
+const List<String> degrees = ['BA', 'BSc', "BEng", 'BFA', 'BBA', 'BMus', 'BEd'];
 
-const List<String> yearOfGrads = [];
+const List<String> yearOfGrads = ['1995/96', '1996/97', '1997/98', '1998/99', '1999/00', '2000/01', '2001/02', '2002/03', '2003/04', '2004/05', '2005/06', '2006/07', '2007/08', '2008/09', '2009/10', '2011/12', '2012/13', '2013/14', '2014/15', '2015/16', '2016/17', '2017/18', '2018/19', '2019/20',];

@@ -1,23 +1,35 @@
+import 'package:alumni_webapp/repositories/donations_repo.dart';
+
 import '_.dart';
 
 extension DonationsController on Controller{
 
-  Future getTotalDonations() async{
-    toggleLoading(true);
-    Future.delayed(const Duration(seconds: 4)).then((value) => totalDonations = 300945);
-    toggleLoading(false);
+  Future<int> getTotalDonations() async{
+    return repository.getDonationTotal();
     
   }
 
-  Future makeDonations()async {
+  Future makeDonations({
+    required int cardNumber,
+    required int cvv,
+    required int expiryDate,
+    required int amount,
+    required int cardPin
+   })async {
     toggleLoading(true);
-    await Future.delayed(const Duration(seconds: 4));
+    await repository.initializePayment(
+      cardNumber: cardNumber, 
+      cvv: cvv, 
+      expiryDate: expiryDate, 
+      amount: amount, 
+      cardPassword: cardPin
+    );
     toggleLoading(false);
   }
 
-  Future sendPaymentToken() async{
+  Future sendPaymentToken(int token) async{
     toggleLoading(true);
-    await Future.delayed(const Duration(seconds: 4));
+    await repository.sendPaymentToken(token);
     toggleLoading(false);
   }
 }

@@ -3,6 +3,8 @@ import 'package:alumni_webapp/controllers/alumni_controller.dart';
 import 'package:alumni_webapp/models/alumni.dart';
 import 'package:alumni_webapp/ui/button.dart';
 import 'package:alumni_webapp/ui/colors.dart';
+import 'package:alumni_webapp/ui/display_failure.dart';
+import 'package:alumni_webapp/ui/display_success.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -49,6 +51,12 @@ class _JoinCardState extends State<JoinCard> {
         SizedBox(height: 12/r,),
         TextFormField(
           controller: controller,
+          style: TextStyle(
+            height: 0.7,
+            fontFamily: 'Roboto',
+            color: Colors.black,
+            fontSize: 16/r
+          ),
           decoration: InputDecoration(
             constraints: BoxConstraints.tight(Size(double.maxFinite, 54/r)),
             border: InputBorder.none,
@@ -82,6 +90,12 @@ class _JoinCardState extends State<JoinCard> {
         ),
         SizedBox(height: 12/r,),
         DropdownButtonFormField(
+          style: TextStyle(
+            height: 0.7,
+            fontFamily: 'Roboto',
+            color: Colors.black,
+            fontSize: 16/r
+          ),
           decoration: InputDecoration(
             constraints: BoxConstraints.tight(Size(double.maxFinite, 54/r)),
             border: InputBorder.none,
@@ -92,7 +106,9 @@ class _JoinCardState extends State<JoinCard> {
           value: fieldValue,
           items: List.generate(
             listOptions.length, 
-            (index) => DropdownMenuItem(child: Text(
+            (index) => DropdownMenuItem(
+              value: listOptions[index],
+              child: Text(
                 listOptions[index], 
                 style: TextStyle(
                   fontSize: 16/r,
@@ -185,9 +201,9 @@ class _JoinCardState extends State<JoinCard> {
             spacing,
             AppButton(
               label: 'Continue', 
-              onPressed: (){
+              onPressed: () async{
                 if (_formKey.currentState!.validate()) {
-                  modelRead.createAlumni(
+                  await modelRead.createAlumni(
                     Alumni(
                       id: null,
                       name: nameCtrl.text,
@@ -198,7 +214,7 @@ class _JoinCardState extends State<JoinCard> {
                       yearOfGraduation: yrOfGradCtrl!
 
                     )
-                  );
+                  ).then((value) => displaySuccess(context)).onError((error, stackTrace) => displayFailure(context));
                 }
             })
           ],

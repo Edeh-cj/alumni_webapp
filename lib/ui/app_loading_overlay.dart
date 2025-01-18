@@ -12,10 +12,10 @@ appLoadingOverlay ({required Widget child})=> Builder(
         Visibility(
           visible: context.watch<Controller>().isLoading,
           child: Container(
-            color: const Color.fromRGBO(242, 242, 242, 0.1),
+            color: Colors.white10,
             alignment: Alignment.center,
             child: const SizedBox.square(
-              dimension: 80,
+              dimension: 30,
               child: CircularProgressIndicator(),
             ),
           ),
