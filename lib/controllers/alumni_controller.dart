@@ -12,10 +12,9 @@ extension AlumniController on Controller {
     toggleLoading(false);
   }
 
-  Future getAllAlumni() async {
-    toggleLoading(true);
-    await repository.getAllAlumni();
-    toggleLoading(false);
+  Future<List<Alumni>> getAllAlumni() async {
+    members = await repository.getAllAlumni();
+    return members;
   }
   
   Future sendMail ({required List<Alumni> alumni, required String title, required String message, required Uint8List? attachment} ) async{

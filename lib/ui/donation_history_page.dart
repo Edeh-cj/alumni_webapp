@@ -32,10 +32,7 @@ class _DonationHistoryPageState extends State<DonationHistoryPage> {
             Expanded(
               child: Padding(
                 padding: EdgeInsets.only(left: 36.0/r),
-                child: Table(
-
-                  children: [tableHeader]+childRows,
-                )
+                child: donationHistoryTable
               )
             ),
             SizedBox(width: 36/r,),
@@ -91,6 +88,118 @@ class _DonationHistoryPageState extends State<DonationHistoryPage> {
   }
 
   spacing(double height)=> SizedBox(height: height,);
+
+  Widget get donationHistoryTable{
+    double r = MediaQuery.of(context).devicePixelRatio;
+    return Expanded(
+      child: FutureBuilder<List<DonationRecord>>(
+        future: context.read<Controller>().getDonationHistory(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting ) {
+            return Align(
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: EdgeInsets.only(top: 16/r),
+                child: const SizedBox.square(
+                  dimension: 30,
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+            );
+            
+          } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
+            final data = snapshot.data!;
+            return Table(
+
+              children: [tableHeader]+List.generate(
+                data.length, 
+                (index) => TableRow(
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(
+                        color: Colors.black.withOpacity(0.2),
+                      )
+                    )
+                  ),
+                  children: [
+                    SizedBox(
+                      height: 54/r,
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 12.0/r),
+                          child: Text(
+                            data[index].name,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16/r,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 54/r,
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          data[index].email,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16/r,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 54/r,
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          DateFormat('d MMM, yyyy').format(data[index].time),
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16/r,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 54/r,
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'N${formatIntWithCommas(data[index].amount)}',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16/r,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ]
+                )
+              ),
+            );
+          } else {
+            return Align(
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: EdgeInsets.only(top: 16/r),
+                child: Text(
+                  'error ${snapshot.error}',
+                  style: TextStyle(
+                    fontSize: 16/r,
+                    color: Colors.red
+                  ),
+                ),
+              ),
+            );
+          }
+        },
+      )
+    );
+  }
 
   TableRow get tableHeader{
     double r = MediaQuery.of(context).devicePixelRatio;
@@ -156,80 +265,6 @@ class _DonationHistoryPageState extends State<DonationHistoryPage> {
         ),
       ]
     );
-  }
-
-  List<TableRow> get childRows {
-    List<DonationRecord> donations = context.watch<Controller>().donationRecords;
-    double r = MediaQuery.of(context).devicePixelRatio;
-    return List.generate(
-    donations.length, 
-    (index) => TableRow(
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: Colors.black.withOpacity(0.2),
-          )
-        )
-      ),
-      children: [
-        SizedBox(
-          height: 54/r,
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Padding(
-              padding: EdgeInsets.only(left: 12.0/r),
-              child: Text(
-                donations[index].name,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16/r,
-                ),
-              ),
-            ),
-          ),
-        ),
-        SizedBox(
-          height: 54/r,
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              donations[index].email,
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 16/r,
-              ),
-            ),
-          ),
-        ),
-        SizedBox(
-          height: 54/r,
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              DateFormat('d MMM, yyyy').format(donations[index].time),
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 16/r,
-              ),
-            ),
-          ),
-        ),
-        SizedBox(
-          height: 54/r,
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              'N${formatIntWithCommas(donations[index].amount)}',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 16/r,
-              ),
-            ),
-          ),
-        ),
-      ]
-    )
-  );
   }
   
   Widget textButton( String title ,Function() onTap) {
@@ -312,7 +347,7 @@ class _DonationHistoryPageState extends State<DonationHistoryPage> {
                   
                 } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
                   return Text(
-                    'N${formatIntWithCommas(context.watch<Controller>().totalDonations)}',
+                    'N${formatIntWithCommas(snapshot.data!)}',
                     style: TextStyle(
                       fontSize: 48/r,
                       color: AppColors.mainGreen,

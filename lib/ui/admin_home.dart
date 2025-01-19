@@ -1,4 +1,5 @@
 import 'package:alumni_webapp/controllers/_.dart';
+import 'package:alumni_webapp/controllers/alumni_controller.dart';
 import 'package:alumni_webapp/controllers/donations_controller.dart';
 import 'package:alumni_webapp/ui/app_loading_overlay.dart';
 import 'package:alumni_webapp/ui/colors.dart';
@@ -22,7 +23,6 @@ class _AdminHomeState extends State<AdminHome> {
   @override
   Widget build(BuildContext context) {
     double r = MediaQuery.of(context).devicePixelRatio;
-    List<Alumni> members = context.watch<Controller>().members;
     return appLoadingOverlay(
       child: Scaffold(
         appBar: AppBar(
@@ -39,16 +39,7 @@ class _AdminHomeState extends State<AdminHome> {
                   children: [
                     searchBar,
                     spacing(32/r),
-                    Expanded(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: List.generate(
-                            members.length, 
-                            (index) => alumniListCard(members[index])
-                          ),
-                        ),
-                      ),
-                    )
+                    alumniList
 
                   ],
                 ),
@@ -261,6 +252,53 @@ class _AdminHomeState extends State<AdminHome> {
     );
   }
 
+  Widget get alumniList{
+    double r = MediaQuery.of(context).devicePixelRatio;
+    return Expanded(
+      child: FutureBuilder<List<Alumni>>(
+        future: context.read<Controller>().getAllAlumni(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting ) {
+            return Align(
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: EdgeInsets.only(top: 16/r),
+                child: const SizedBox.square(
+                  dimension: 30,
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+            );
+            
+          } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
+            return SingleChildScrollView(
+            child: Column(
+              children: List.generate(
+                snapshot.data!.length, 
+                (index) => alumniListCard(snapshot.data![index])
+              ),
+            ),
+          );
+          } else {
+            return Align(
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: EdgeInsets.only(top: 16/r),
+                child: Text(
+                  'error ${snapshot.error}',
+                  style: TextStyle(
+                    fontSize: 16/r,
+                    color: Colors.red
+                  ),
+                ),
+              ),
+            );
+          }
+        },
+      )
+    );
+  }
+
   Widget get donationBox {
     double r = MediaQuery.of(context).devicePixelRatio;
     formatIntWithCommas(int b){
@@ -301,7 +339,7 @@ class _AdminHomeState extends State<AdminHome> {
                   
                 } else if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
                   return Text(
-                    'N${formatIntWithCommas(context.watch<Controller>().totalDonations)}',
+                    'N${formatIntWithCommas(snapshot.data!)}',
                     style: TextStyle(
                       fontSize: 48/r,
                       color: AppColors.mainGreen,

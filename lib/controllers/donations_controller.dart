@@ -1,5 +1,6 @@
 import 'package:alumni_webapp/repositories/donations_repo.dart';
 
+import '../models/donation_record.dart';
 import '_.dart';
 
 extension DonationsController on Controller{
@@ -7,6 +8,10 @@ extension DonationsController on Controller{
   Future<int> getTotalDonations() async{
     return repository.getDonationTotal();
     
+  }
+
+  Future<List<DonationRecord>> getDonationHistory() async{
+    return repository.getDonationHistory();
   }
 
   Future makeDonations({

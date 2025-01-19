@@ -1,6 +1,10 @@
+import 'package:alumni_webapp/controllers/_.dart';
+import 'package:alumni_webapp/controllers/auth_controller.dart';
 import 'package:alumni_webapp/ui/colors.dart';
+import 'package:alumni_webapp/ui/donation_history_page.dart';
 // import 'package:alumni_webapp/screens/send_invite_card.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 customAppBar (String title, )=> Builder(
   builder: (context){
@@ -18,13 +22,34 @@ customAppBar (String title, )=> Builder(
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              InkWell(
-                onTap: (){},
-                child: Icon(
+              PopupMenuButton(
+                icon: Icon(
                   Icons.menu,
                   color: AppColors.mainGreen,
                   size: 32/r,
                 ),
+                itemBuilder: (context)=>[
+                  PopupMenuItem(
+                    onTap: () => context.read<Controller>().signout(),
+                    child: Text(
+                      'SignOut',
+                      style: TextStyle(
+                        fontSize: 16/r,
+                        color: Colors.black,
+                      ),
+                    )
+                  ),
+                  PopupMenuItem(
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context)=> const DonationHistoryPage())),
+                    child: Text(
+                      'Donation History',
+                      style: TextStyle(
+                        fontSize: 16/r,
+                        color: Colors.black,
+                      ),
+                    )
+                  ),
+                ]
               ),
               SizedBox(width: 16/r,),
               Text(
@@ -36,41 +61,6 @@ customAppBar (String title, )=> Builder(
               )
             ],
           ),
-          // InkWell(
-          //   onTap: () {
-          //     showDialog(
-          //       barrierColor: Colors.black.withOpacity(0.2),
-          //       context: context,
-          //       builder: (context) => const Center(
-          //         child: SendInviteCard(),
-          //       ),
-          //     );              
-          //   },
-          //   child: Row(
-          //     mainAxisSize: MainAxisSize.min,
-          //     mainAxisAlignment: MainAxisAlignment.end,
-          //     children: [
-          //       Text(
-          //         '+',
-          //         style: TextStyle(
-          //           color: AppColors.mainGreen,
-          //           fontSize: 24/r,
-          //           height: 0.7
-          //         ),
-          //       ),
-          //       SizedBox(width: 16/r,),
-          //       Text(
-          //         'New Invitations',
-          //         style: TextStyle(
-          //           color: AppColors.mainGreen,
-          //           fontSize: 16/r,
-          //           height: 0.7
-          //         ),
-          //       )
-          
-          //     ],
-          //   ),
-          // )
         ],
       ),
     );

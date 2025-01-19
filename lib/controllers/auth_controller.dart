@@ -10,4 +10,9 @@ extension AuthController on Controller{
     adminUser = user;
     toggleLoading(false);
   }
+
+  signout() {
+    adminUser = null;
+    toggleLoading(false);
+  }
 }

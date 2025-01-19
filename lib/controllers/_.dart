@@ -8,9 +8,8 @@ class Controller extends ChangeNotifier{
   final repository = Repository();
 
   bool isLoading = false;
-  int totalDonations = 30000;
   User? adminUser;
-  List<Alumni> members = List.generate(9, (index) => Alumni.dummy(id: index));
+  List<Alumni> members = [];
 
   List<DonationRecord> donationRecords = [DonationRecord.dummy(), DonationRecord.dummy(), DonationRecord.dummy()];
 
