@@ -6,9 +6,17 @@ extension AuthController on Controller{
 
   Future loginAdmin(String email, String passkey) async{
     toggleLoading(true);
-    User? user = await repository.authenticate(email, passkey);
-    adminUser = user;
-    toggleLoading(false);
+    try {
+      User? user = await repository.authenticate(email, passkey);
+      adminUser = user;
+      toggleLoading(false);
+    }
+    catch(error){
+      toggleLoading(false);
+      rethrow;
+    }
+
+    
   }
 
   signout() {
