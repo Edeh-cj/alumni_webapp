@@ -18,16 +18,9 @@ class PaymentDetailsForm extends StatefulWidget {
 
 class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
   final _detailFormKey = GlobalKey<FormState>();
-  final _tokenFormKey = GlobalKey<FormState>();
-  final cardNumberCtrl = TextEditingController();
-  final cvvCtrl = TextEditingController();
-  final expiryCtrl = TextEditingController();
+  final nameCtrl = TextEditingController();
   final amountCtrl = TextEditingController();
-  final passwordCtrl = TextEditingController();
-  final tokenCtrl = TextEditingController();
-
-  late Widget display = detailForm;
-
+  final emailCtrl = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
@@ -37,7 +30,7 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
                       ? Colors.black.withOpacity(0.1)
                       : Colors.transparent,
                   BlendMode.darken),
-              child: display)),
+              child: detailForm)),
       Visibility(
         visible: context.watch<Controller>().isLoading,
         child: const Center(
@@ -62,86 +55,27 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             spacing(10 / r),
-            cardNumberField,
+            nameField,
             spacing(10 / r),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: cvvField,
-                ),
-                SizedBox(
-                  width: 24 / r,
-                ),
-                Expanded(
-                  flex: 1,
-                  child: expiryField,
-                ),
-              ],
-            ),
+            emailField,
             spacing(10 / r),
             amountField,
-            spacing(10 / r),
-            passwordField,
             spacing(10 / r),
             AppButton(
                 label: 'Continue',
                 onPressed: () async {
-                  if (!_detailFormKey.currentState!.validate()) {
+                  if (_detailFormKey.currentState!.validate()) {
                     await context
                         .read<Controller>()
-                        .makeDonations(
-                          cardNumber: int.parse(cardNumberCtrl.text), 
-                          cvv: int.parse(cardNumberCtrl.text), 
-                          expiryDate: int.parse(expiryCtrl.text), 
-                          amount: int.parse(amountCtrl.text), 
-                          cardPin: int.parse(passwordCtrl.text)
+                        .onDonateClick(
+                          nameCtrl.text,
+                          emailCtrl.text,
+                          int.parse(amountCtrl.text)
                           )
-                        .then((value) {
-                      setState(() {
-                        display = tokenForm;
-                      });
-                    }).onError((error, stackTrace) => displayFailure(context));
+                        .onError((error, stackTrace) => displayFailure(context));
                   }
-                })
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget get tokenForm {
-    double r = MediaQuery.of(context).devicePixelRatio;
-    return Container(
-      width: 408 / r,
-      padding: EdgeInsets.all(24 / r),
-      decoration: BoxDecoration(
-          color: AppColors.cardBackground,
-          border: Border.all(color: Colors.black.withOpacity(0.15))),
-      child: Form(
-        key: _tokenFormKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            spacing(10 / r),
-            tokenField,
-            spacing(10 / r),
-            AppButton(
-              label: 'Submit',
-              onPressed: () async {
-                if (!_tokenFormKey.currentState!.validate()) {
-                  await context
-                      .read<Controller>()
-                      .sendPaymentToken(
-                        int.parse(tokenCtrl.text)
-                      )
-                      .then((value) {
-                        displaySuccess(context);
-                  }).onError((error, stackTrace) => displayFailure(context));
                 }
-              })
+              )
           ],
         ),
       ),
@@ -152,14 +86,14 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
         height: height,
       );
 
-  Widget get cardNumberField {
+  Widget get nameField {
     double r = MediaQuery.of(context).devicePixelRatio;
     return Material(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Card Number',
+            'Name',
             style: TextStyle(
                 height: 0.7,
                 fontFamily: 'Roboto',
@@ -170,19 +104,14 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
             height: 12 / r,
           ),
           TextFormField(
-            controller: cardNumberCtrl,
-            maxLength: 16,
-            buildCounter: (context,
-                    {required currentLength, required isFocused, maxLength}) =>
-                null,
+            controller: nameCtrl,
             style: TextStyle(
                 height: 1.4,
                 fontFamily: 'Roboto',
                 color: Colors.black.withOpacity(0.7),
                 fontSize: 16 / r),
-            inputFormatters: [CreditCardNumberInputFormatter()],
             decoration: InputDecoration(
-              hintText: 'XXXX XXXX XXXX XXXX',
+              hintText: 'Nnabuike Ugwu',
               constraints: BoxConstraints.tight(Size(double.maxFinite, 54 / r)),
               border: InputBorder.none,
               errorBorder: InputBorder.none,
@@ -190,12 +119,11 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
               fillColor: AppColors.textfieldGray,
             ),
             validator: (value) {
-              if (value != null &&
-                  value.contains(RegExp(r'^[0-9]+$')) &&
-                  value.length < 16) {
+              if (value != null
+                  ) {
                 return null;
               } else {
-                return 'This Field must be Numeric and not null';
+                return 'Invalid input';
               }
             },
           )
@@ -204,14 +132,14 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
     );
   }
 
-  Widget get cvvField {
+   Widget get emailField {
     double r = MediaQuery.of(context).devicePixelRatio;
     return Material(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'CVV',
+            'Email',
             style: TextStyle(
                 height: 0.7,
                 fontFamily: 'Roboto',
@@ -222,19 +150,14 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
             height: 12 / r,
           ),
           TextFormField(
-            controller: cvvCtrl,
-            maxLength: 3,
-            buildCounter: (context,
-                    {required currentLength, required isFocused, maxLength}) =>
-                null,
+            controller: emailCtrl,
             style: TextStyle(
                 height: 1.4,
                 fontFamily: 'Roboto',
                 color: Colors.black.withOpacity(0.7),
                 fontSize: 16 / r),
-            inputFormatters: [CreditCardCvcInputFormatter()],
             decoration: InputDecoration(
-              hintText: 'XXX',
+              hintText: 'nnabuike@gmail.com',
               constraints: BoxConstraints.tight(Size(double.maxFinite, 54 / r)),
               border: InputBorder.none,
               errorBorder: InputBorder.none,
@@ -242,61 +165,8 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
               fillColor: AppColors.textfieldGray,
             ),
             validator: (value) {
-              if (value != null &&
-                  value.contains(RegExp(r'^(0-9)+$')) &&
-                  value.length == 3) {
-                return null;
-              } else {
-                return 'This Field must not be null';
-              }
-            },
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget get expiryField {
-    double r = MediaQuery.of(context).devicePixelRatio;
-    return Material(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Expiry Date',
-            style: TextStyle(
-                height: 0.7,
-                fontFamily: 'Roboto',
-                color: Colors.black,
-                fontSize: 16 / r),
-          ),
-          SizedBox(
-            height: 12 / r,
-          ),
-          TextFormField(
-            controller: expiryCtrl,
-            maxLength: 3,
-            buildCounter: (context,
-                    {required currentLength, required isFocused, maxLength}) =>
-                null,
-            style: TextStyle(
-                height: 1.4,
-                fontFamily: 'Roboto',
-                color: Colors.black.withOpacity(0.7),
-                fontSize: 16 / r),
-            inputFormatters: [CreditCardCvcInputFormatter()],
-            decoration: InputDecoration(
-              hintText: 'XX/XX',
-              constraints: BoxConstraints.tight(Size(double.maxFinite, 54 / r)),
-              border: InputBorder.none,
-              errorBorder: InputBorder.none,
-              filled: true,
-              fillColor: AppColors.textfieldGray,
-            ),
-            validator: (value) {
-              if (value != null &&
-                  value.contains(RegExp(r'^(0-9)+$')) &&
-                  value.length == 4) {
+              if (value != null
+                  ) {
                 return null;
               } else {
                 return 'Invalid input';
@@ -332,13 +202,6 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
                 fontFamily: 'Roboto',
                 color: Colors.black.withOpacity(0.7),
                 fontSize: 16 / r),
-            inputFormatters: [
-              CurrencyInputFormatter(
-                  thousandSeparator: ThousandSeparator.Comma,
-                  leadingSymbol: 'N',
-                  mantissaLength: 2,
-                  useSymbolPadding: true)
-            ],
             decoration: InputDecoration(
               hintText: 'N 0.00',
               constraints: BoxConstraints.tight(Size(double.maxFinite, 54 / r)),
@@ -348,9 +211,7 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
               fillColor: AppColors.textfieldGray,
             ),
             validator: (value) {
-              if (value != null &&
-                  value.contains(RegExp(r'^(0-9)+$')) &&
-                  value.length == 4) {
+              if (value != null ) {
                 return null;
               } else {
                 return 'Invalid input';
@@ -362,108 +223,4 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
     );
   }
 
-  Widget get passwordField {
-    double r = MediaQuery.of(context).devicePixelRatio;
-    return Material(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Password',
-            style: TextStyle(
-                height: 0.7,
-                fontFamily: 'Roboto',
-                color: Colors.black,
-                fontSize: 16 / r),
-          ),
-          SizedBox(
-            height: 12 / r,
-          ),
-          TextFormField(
-            controller: expiryCtrl,
-            maxLength: 4,
-            obscureText: true,
-            buildCounter: (context,
-                    {required currentLength, required isFocused, maxLength}) =>
-                null,
-            style: TextStyle(
-                height: 1.4,
-                fontFamily: 'Roboto',
-                color: Colors.black.withOpacity(0.7),
-                fontSize: 16 / r),
-            inputFormatters: [CreditCardCvcInputFormatter()],
-            decoration: InputDecoration(
-              hintText: '****',
-              constraints: BoxConstraints.tight(Size(double.maxFinite, 54 / r)),
-              border: InputBorder.none,
-              errorBorder: InputBorder.none,
-              filled: true,
-              fillColor: AppColors.textfieldGray,
-            ),
-            validator: (value) {
-              if (value != null &&
-                  value.contains(RegExp(r'^(0-9)+$')) &&
-                  value.length == 4) {
-                return null;
-              } else {
-                return 'Invalid input';
-              }
-            },
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget get tokenField {
-    double r = MediaQuery.of(context).devicePixelRatio;
-    return Material(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '6-Digit Pin From Email',
-            style: TextStyle(
-                height: 0.7,
-                fontFamily: 'Roboto',
-                color: Colors.black,
-                fontSize: 16 / r),
-          ),
-          SizedBox(
-            height: 12 / r,
-          ),
-          TextFormField(
-            controller: cvvCtrl,
-            maxLength: 3,
-            buildCounter: (context,
-                    {required currentLength, required isFocused, maxLength}) =>
-                null,
-            style: TextStyle(
-                height: 1.4,
-                fontFamily: 'Roboto',
-                color: Colors.black.withOpacity(0.7),
-                fontSize: 16 / r),
-            inputFormatters: [CreditCardNumberInputFormatter()],
-            decoration: InputDecoration(
-              hintText: 'XXX XXX',
-              constraints: BoxConstraints.tight(Size(double.maxFinite, 54 / r)),
-              border: InputBorder.none,
-              errorBorder: InputBorder.none,
-              filled: true,
-              fillColor: AppColors.textfieldGray,
-            ),
-            validator: (value) {
-              if (value != null &&
-                  value.contains(RegExp(r'^(0-9)+$')) &&
-                  value.length == 3) {
-                return null;
-              } else {
-                return 'This Field must not be null';
-              }
-            },
-          )
-        ],
-      ),
-    );
-  }
 }

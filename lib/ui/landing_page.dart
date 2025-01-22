@@ -1,9 +1,13 @@
+import 'package:alumni_webapp/controllers/donations_controller.dart';
 import 'package:alumni_webapp/ui/app_loading_overlay.dart';
 import 'package:alumni_webapp/ui/colors.dart';
 import 'package:alumni_webapp/ui/payment_cards.dart';
 import 'package:alumni_webapp/ui/join_card.dart';
 import 'package:alumni_webapp/ui/login_card.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../controllers/_.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
@@ -126,6 +130,7 @@ class _LandingPageState extends State<LandingPage> {
                             shape: const BeveledRectangleBorder(side: BorderSide(width: 0.5)),
                           ),
                           onPressed: (){
+                            
                             showDialog(
                               context: context, 
                               builder: (context){

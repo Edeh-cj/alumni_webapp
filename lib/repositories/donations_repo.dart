@@ -58,13 +58,31 @@ extension DonationsRepo on Repository{
     
   }
 
-  Future initializePayment({
-    required int  cardNumber, 
-    required int cvv, 
-    required int expiryDate, 
-    required int amount, 
-    required int cardPassword
-  })async{}
+  Future<String> initializePayment(String name, String email, int amount, )async{
+
+    const path = '/donations/initialize';
+    final body = jsonEncode({
+      'email' : email,
+      'amount' : amount,
+      'name' : name
+    }); 
+
+    final response = await http.post(
+      baseuri(path),
+      body: body,
+      headers: {
+        'Content-Type' : 'application/json',
+                
+      }
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return data["data"]['authorization_url'];
+    } else {
+      throw Exception(response.statusCode);
+    }
+  }
 
   Future sendPaymentToken(int token) async{}
 }

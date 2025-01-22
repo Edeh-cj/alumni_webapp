@@ -1,4 +1,5 @@
 import 'package:alumni_webapp/repositories/donations_repo.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../models/donation_record.dart';
 import '_.dart';
@@ -14,6 +15,23 @@ extension DonationsController on Controller{
     return repository.getDonationHistory();
   }
 
+  onDonateClick(String name, String email, int amount) async{
+    toggleLoading(true);
+    await repository.initializePayment(name, email, amount)
+      .then(
+        (value) async{
+          toggleLoading(false);
+          await launchUrl(Uri.parse(value)).catchError((error){
+            toggleLoading(false);
+            throw Exception("couldn't launch redirect");
+          });
+        }
+      ). catchError((error) {
+        toggleLoading(false);
+        throw Exception(error);
+      });
+  }
+
   Future makeDonations({
     required int cardNumber,
     required int cvv,
@@ -22,13 +40,7 @@ extension DonationsController on Controller{
     required int cardPin
    })async {
     toggleLoading(true);
-    await repository.initializePayment(
-      cardNumber: cardNumber, 
-      cvv: cvv, 
-      expiryDate: expiryDate, 
-      amount: amount, 
-      cardPassword: cardPin
-    );
+    // await repository.initializePayment();
     toggleLoading(false);
   }
 
